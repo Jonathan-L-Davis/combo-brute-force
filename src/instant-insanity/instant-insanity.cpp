@@ -69,8 +69,13 @@ int main(){
     
     std::cout << "Instant insanity brute force." << "\n";
     int total_solutions = 0;
+    int number = 0;
+    for( int i = 0; i < number; i++ ){
+    for( int j = 0; j < number; j++ ){
+    for( int k = 0; k < number; k++ ){
+    for( int l = 0; l < number; l++ ){
     
-    
+    }}}}
     
     
     
