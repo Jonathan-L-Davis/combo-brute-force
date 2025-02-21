@@ -53,8 +53,10 @@ cube<D> get_cube(uint64_t index){
     
     std::set<uint8_t> faces_left = {0,1,2,3,4,5};
     
+    
+    
     auto f = faces_left.begin();
-    std::advance(f,index%6);
+    std::advance(f,index%6);// get's ith element of set. dun dun dunnnn
     faces_left -= {*f};
     
     
