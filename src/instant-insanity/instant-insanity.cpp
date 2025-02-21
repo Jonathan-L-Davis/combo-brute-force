@@ -26,7 +26,7 @@ std::set<T> operator -=(std::set<T>& result, std::set<T> subMe){
 // if we enumerate all valid cubes with ignorance of rotation, we eliminate the need for computing rotations ie the lack of explicit rotation is our rotation. Otherwise we have to explicitly find duplicates & what not. (GARBAGE), so we don't do that.
 
 template<uint32_t D>
-struct cube_opposite_faces{
+struct cube_opposite_faces{// ended up not using this to optimize, lazy solution works well enough (I hope, not worth effort rn).
     uint8_t f1[D];
     uint8_t f2[D];
 };
@@ -47,23 +47,44 @@ struct chain{
     cube<D> arr[4];
 };
 
+
+//actually kind of a cool mapping. I'm drunk rn, so you probably have to ask me later/in person.
 template<uint32_t D>
 cube<D> get_cube(uint64_t index){
     cube<D> retMe;
     
     std::set<uint8_t> faces_left = {0,1,2,3,4,5};
     
+    retMe.faces[index%6] = 0;
     
-    
-    auto f = faces_left.begin();
-    std::advance(f,index%6);// get's ith element of set. dun dun dunnnn
-    faces_left -= {*f};
-    
-    
+    faces_left -= {uint8_t(index%6)};
+    index /= 6;
     
     
     index /= 5;
     
+    index /= 4;
+    
+    index /= 3;
+    
+    return retMe;
+}
+
+template<uint32_t D>
+bool is_solution( chain<D> checkMe ){
+    static_assert(D >= 1);// really doesn't make sense for 0 dimensions. 1 dimension is bad enough, but 0?! You basically waste a dimension out of every N dimensions. This can be used for optimization, but not while drinking.
+    bool retMe = true;
+    std::set<uint8_t> colors = {0,1,2,3};
+    for( int i = 0; i < 2*(D-1); i++ ){// for each face of tower
+        std::set<uint8_t> touched_colors = {};
+        for( int j = 0; j<4; j++ ){// for each cube
+            
+            touched_colors += checkMe.arr[j][i];
+            
+        }
+        if(touched_colors != colors)
+            retMe = false;
+    }
     return retMe;
 }
 
@@ -71,17 +92,25 @@ int main(){
     
     std::cout << "Instant insanity brute force." << "\n";
     int total_solutions = 0;
-    int number = 0;
+    int number = 5760;
     for( int i = 0; i < number; i++ ){
+        cube<3> cube_i = get_cube(i);
     for( int j = 0; j < number; j++ ){
+        cube<3> cube_j = get_cube(j);
     for( int k = 0; k < number; k++ ){
+        cube<3> cube_k = get_cube(k);
     for( int l = 0; l < number; l++ ){
-    
+        cube<3> cube_l = get_cube(l);
+            
+            chain checkMe = {cube_i,cube_j,cube_k,cube_l};
+            
+            if(is_solution(checkMe))
+                total_solutions++;
     }}}}
     
     
-    
-    
+    std::cout << "Total solutions to all instant insanity cube settings\n";
+    std::cout << total_solutions << "\n";
     
 }
 
