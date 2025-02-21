@@ -23,7 +23,7 @@ std::set<T> operator -=(std::set<T>& result, std::set<T> subMe){
 }
 
 // the two coob types are useful for the population vs the rotation parts. Rotation only blocks out one side of the 
-
+// if we enumerate all valid cubes with ignorance of rotation, we eliminate the need for computing rotations ie the lack of explicit rotation is our rotation. Otherwise we have to explicitly find duplicates & what not. (GARBAGE), so we don't do that.
 
 template<uint32_t D>
 struct cube_opposite_faces{
@@ -50,9 +50,14 @@ struct chain{
 template<uint32_t D>
 cube<D> get_cube(uint64_t index){
     cube<D> retMe;
-    retMe.faces[0] = 0;
     
-    std::set faces_left = {1,2,3,4,5};
+    std::set<uint8_t> faces_left = {0,1,2,3,4,5};
+    
+    auto f = faces_left.begin();
+    std::advance(f,index%6);
+    faces_left -= {*f};
+    
+    
     
     
     index /= 5;
