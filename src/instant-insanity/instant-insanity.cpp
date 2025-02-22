@@ -62,11 +62,17 @@ struct chain{
 
 
 //actually kind of a cool mapping. I'm drunk rn, so you probably have to ask me later/in person.
-template<uint32_t D>
+template<uint32_t D>// last 2 don't matter at all. Went through several optimization steps, lots of symmetry. Rotations don't matter if you enumerate all colorations anyway. Can ignore 2 sides & that's a 16 x speed up per cube.
 cube<D> get_cube(uint64_t index){
     cube<D> retMe;
     
-
+    retMe.faces[0] = index%4;
+    index >>= 2;
+    retMe.faces[1] = index%4;
+    index >>= 2;
+    retMe.faces[2] = index%4;
+    index >>= 2;
+    retMe.faces[3] = index%4;//only works for 3;
     
     return retMe;
 }
@@ -80,7 +86,7 @@ bool is_solution( chain<D> checkMe ){
         std::set<uint8_t> touched_colors = {};
         for( int j = 0; j<4; j++ ){// for each cube
             
-            touched_color.insert(checkMe.arr[j].faces[i]);
+            touched_colors.insert(checkMe.arr[j].faces[i]);
             
         }
         if(touched_colors != colors)
@@ -93,21 +99,25 @@ int main(){
     
     std::cout << "Instant insanity brute force." << "\n";
     int total_solutions = 0;
-    int number = 5760;
+    int number = 256;
     for( int i = 0; i < number; i++ ){
         cube<3> cube_i = get_cube<3>(i);
-    for( int j = 0; j < 0; j++ ){
+    for( int j = 0; j < number; j++ ){
         cube<3> cube_j = get_cube<3>(j);
-    for( int k = 0; k < 0; k++ ){
+    for( int k = 0; k < number; k++ ){
         cube<3> cube_k = get_cube<3>(k);
-    for( int l = 0; l < 0; l++ ){
+    for( int l = 0; l < number; l++ ){
         cube<3> cube_l = get_cube<3>(l);
             
             chain<3> checkMe = {cube_i,cube_j,cube_k,cube_l};
             
             if(is_solution(checkMe))
                 total_solutions++;
-    }}}}
+    }}}
+    
+    std::cout << i << "\n";
+    std::cout << "Solutions: " << total_solutions << "\n";
+    }
     
     
     std::cout << "Total solutions to all instant insanity cube settings\n";
